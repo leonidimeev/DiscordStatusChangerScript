@@ -3,7 +3,7 @@ import json
 import time
 import os
 
-url = "https://discord.com/api/v9/guilds/355164847652077568/roles/1120033388842192997"
+url = "https://discord.com/api/v9/users/@me"
 # Retrieve the value of the 'TOKEN' environment variable
 token = os.getenv('AUTHORIZATION_TOKEN')
 
