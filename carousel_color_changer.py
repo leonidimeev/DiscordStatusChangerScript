@@ -9,7 +9,16 @@ array_string = os.getenv('AUTHORIZATION_TOKENS')
 tokens_array = array_string.split(',')
 using_token_enumerator = 0
 
-colors = [1752220, 1000220, 1750020, 2752220]
+decimal_colors = [
+    16711680,  # Красный (Red)
+    65280,     # Зеленый (Green)
+    255,       # Синий (Blue)
+    16776960,  # Желтый (Yellow)
+    16711935,  # Пурпурный (Purple)
+    65535,     # Белый (White)
+    8421504,   # Серый (Gray)
+    16777215   # Черный (Black)
+]
 color_enumerator = 0
 
 
@@ -34,7 +43,7 @@ while True:
     carousel_color_change_payload = json.dumps({
         "name": "Carousel",
         "permissions": "0",
-        "color": colors[color_enumerator],
+        "color": decimal_colors[color_enumerator],
         "hoist": False,
         "mentionable": False,
         "icon": None,
@@ -43,7 +52,7 @@ while True:
     demokrat_color_change_payload = json.dumps({
         "name": "DEMOCRAT",
         "permissions": "8804682432511",
-        "color": colors[color_enumerator],
+        "color": decimal_colors[color_enumerator],
         "hoist": False,
         "mentionable": False,
         "icon": None,
@@ -52,15 +61,14 @@ while True:
 
     carousel_color_change_response = requests.request("PATCH", url, headers=headers, data=carousel_color_change_payload)
     carousel_operation_success = carousel_color_change_response.status_code == 200
-    color_changed_string = 'Carousel color changed' if carousel_operation_success else 'Color not changed'
-    print(
-        f'{color_changed_string}. Status code: {carousel_color_change_response.status_code}')  # Print the response status code
+    color_changed_string = 'Carousel color changed' if carousel_operation_success else 'Carousel color not changed'
+    print(f'{color_changed_string}. Status code: {carousel_color_change_response.status_code}')  # Print the response status code
     using_token_enumerator = change_too_many_requests_response(carousel_color_change_response, using_token_enumerator)
     time.sleep(0.5)
 
     democrat_color_change_response = requests.request("PATCH", url, headers=headers, data=carousel_color_change_payload)
     carousel_operation_success = carousel_color_change_response.status_code == 200
-    color_changed_string = 'Democrat color changed' if carousel_operation_success else 'Color not changed'
+    color_changed_string = 'Democrat color changed' if carousel_operation_success else 'Democrat color not changed'
     print(f'{color_changed_string}. Status code: {carousel_color_change_response.status_code}')
     using_token_enumerator = change_too_many_requests_response(carousel_color_change_response, using_token_enumerator)
     time.sleep(0.5)
@@ -69,5 +77,5 @@ while True:
 
     if operation_success:
         color_enumerator += 1
-    if color_enumerator == len(colors):
+    if color_enumerator == len(decimal_colors):
         color_enumerator = 0
