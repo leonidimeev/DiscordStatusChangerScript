@@ -12,6 +12,16 @@ using_token_enumerator = 0
 colors = [1752220, 1000220, 1750020, 2752220]
 color_enumerator = 0
 
+
+def change_too_many_requests_response(color_change_response, token_enumerator):
+    if color_change_response.status_code == 429:
+        token_enumerator += 1
+        if token_enumerator == len(tokens_array):
+            token_enumerator = 0
+        print(f'Changed to using token: {token_enumerator}')
+    return token_enumerator
+
+
 while True:
     headers = {
         'authority': 'discord.com',
@@ -21,8 +31,7 @@ while True:
         'content-type': 'application/json'
     }
 
-    # Color changer
-    color_change_payload = json.dumps({
+    carousel_color_change_payload = json.dumps({
         "name": "Carousel",
         "permissions": "0",
         "color": colors[color_enumerator],
@@ -31,20 +40,34 @@ while True:
         "icon": None,
         "unicode_emoji": None
     })
-    color_change_response = requests.request("PATCH", url, headers=headers, data=color_change_payload)
-    operation_success = color_change_response.status_code == 200
-    color_changed_string = 'Color changed' if operation_success else 'Color not changed'
-    print(f'{color_changed_string}. Status code: {color_change_response.status_code}')  # Print the response status code
+    demokrat_color_change_payload = json.dumps({
+        "name": "DEMOCRAT",
+        "permissions": "8804682432511",
+        "color": colors[color_enumerator],
+        "hoist": False,
+        "mentionable": False,
+        "icon": None,
+        "unicode_emoji": None
+    })
+
+    carousel_color_change_response = requests.request("PATCH", url, headers=headers, data=carousel_color_change_payload)
+    carousel_operation_success = carousel_color_change_response.status_code == 200
+    color_changed_string = 'Carousel color changed' if carousel_operation_success else 'Color not changed'
+    print(
+        f'{color_changed_string}. Status code: {carousel_color_change_response.status_code}')  # Print the response status code
+    using_token_enumerator = change_too_many_requests_response(carousel_color_change_response, using_token_enumerator)
+    time.sleep(0.5)
+
+    democrat_color_change_response = requests.request("PATCH", url, headers=headers, data=carousel_color_change_payload)
+    carousel_operation_success = carousel_color_change_response.status_code == 200
+    color_changed_string = 'Democrat color changed' if carousel_operation_success else 'Color not changed'
+    print(f'{color_changed_string}. Status code: {carousel_color_change_response.status_code}')
+    using_token_enumerator = change_too_many_requests_response(carousel_color_change_response, using_token_enumerator)
+    time.sleep(0.5)
+
+    operation_success = carousel_operation_success * carousel_operation_success
+
     if operation_success:
         color_enumerator += 1
     if color_enumerator == len(colors):
         color_enumerator = 0
-
-    if color_change_response.status_code == 429:
-        using_token_enumerator += 1
-        if using_token_enumerator == len(tokens_array):
-            using_token_enumerator = 0
-        print(f'Changed to using token: {using_token_enumerator}')
-
-    # Delay
-    time.sleep(0.5)
