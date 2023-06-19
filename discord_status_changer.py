@@ -4,6 +4,7 @@ import requests
 from timeloop import Timeloop
 from datetime import timedelta, datetime
 from sys import argv
+import os
 import time
 
 script_mode = argv
@@ -16,10 +17,14 @@ status_text_set = ["waiting for ban", "waiting for ban.", "waiting for ban..", "
 
 loading_points = ["", ".", "..", "..."]
 
+# Retrieve the value of the 'TOKEN' environment variable
+token = os.getenv('AUTHORIZATION_TOKEN')
 
 
 headers = {
-    # Enter your headers here
+    'authority': 'discord.com',
+    'authorization': f'{token}',
+    'content-type': 'application/json',
 }
 
 # region status_icon_changer
